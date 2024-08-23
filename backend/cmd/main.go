@@ -14,7 +14,7 @@ func main() {
 		})
 	})
 
-	err := r.Run()
+	err := r.Run("localhost:8080")
 	if err != nil {
 		return
 	}
