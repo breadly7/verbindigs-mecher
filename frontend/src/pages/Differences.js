@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import PageTemplate from './PageTemplate';
+import PageTemplate from '../components/PageTemplate';
 import { getScheduleDifferences } from '../services/apiService';
 import Accordion from '../components/Accordion';
 import DifferenceItem from '../components/DifferenceItem';
