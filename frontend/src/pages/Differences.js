@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import PageTemplate from './PageTemplate';
 import { getScheduleDifferences } from '../services/apiService';
+import Accordion from '../components/Accordion';
+import DifferenceItem from '../components/DifferenceItem';
 
 const Differences = () => {
     const [data, setData] = useState(null);
@@ -21,8 +23,15 @@ const Differences = () => {
 
     return (
         <PageTemplate title="Differences">
-            <p>This is where your content goes.</p>
-            {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
+            {data && data.map(location => (
+                <Accordion key={location.name} title={location.name}>
+                    {location.differences.map(diff => (
+                        <div key={diff.id}>
+                            <DifferenceItem difference={diff} />
+                        </div>
+                    ))}
+                </Accordion>
+            ))}
         </PageTemplate>
     );
 }
