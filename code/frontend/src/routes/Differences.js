@@ -29,7 +29,18 @@ const Differences = () => {
             const line = diff.TrainLine || 'Unknown';
             counts[line] = (counts[line] || 0) + 1;
         });
-        return Object.entries(counts).sort((a, b) => b[1] - a[1]);;
+        return counts;
+    };
+
+    const getTotalTrainLineCounts = (differencesPerDay) => {
+        const totalCounts = {};
+        differencesPerDay.forEach(day => {
+            const dayCounts = getTrainLineCounts(day.Differences);
+            for (const [line, count] of Object.entries(dayCounts)) {
+                totalCounts[line] = (totalCounts[line] || 0) + count;
+            }
+        });
+        return totalCounts;
     };
 
     const getTotalDifferencesCount = (differencesPerDay) => {
@@ -44,11 +55,27 @@ const Differences = () => {
                 </div>
             ) : (
                 data && data.map(location => {
+                    const totalTrainLineCounts = Object.entries(getTotalTrainLineCounts(location.DifferencesPerDay)).sort((a, b) => b[1] - a[1]);
                     return (
                         <Accordion key={location.Name} title={location.Name} itemCount={getTotalDifferencesCount(location.DifferencesPerDay)}>
+                            <div className="flex flex-wrap mb-4">
+                                {totalTrainLineCounts.map(([line, count]) => (
+                                    <span key={line} className="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+                                        {line}: {count}
+                                    </span>
+                                ))}
+                            </div>
                             {location.DifferencesPerDay.map(diffPerDay => {
+                                const trainLineCounts = Object.entries(getTrainLineCounts(diffPerDay.Differences)).sort((a, b) => b[1] - a[1]);
                                 return (
                                     <Accordion key={diffPerDay.Date} title={new Date(diffPerDay.Date).toLocaleDateString()} itemCount={diffPerDay.Differences.length}>
+                                        <div className="flex flex-wrap mb-4">
+                                            {trainLineCounts.map(([line, count]) => (
+                                                <span key={line} className="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+                                                    {line}: {count}
+                                                </span>
+                                            ))}
+                                        </div>
                                         {diffPerDay.Differences.map(diff => (
                                             <DifferenceItem key={diff.TrainNumber} difference={diff} />
                                         ))}
@@ -56,24 +83,7 @@ const Differences = () => {
                                 );
                             })}
                         </Accordion>
-                    )
-                    return location.DifferencesPerDay.map(diffPerDay => {
-                        /* const trainLineCounts = getTrainLineCounts(location.Differences);
-                        return (
-                            <Accordion key={location.Name} title={location.Name} itemCount={location.Differences.length}>
-                                <div className="flex flex-wrap mb-4">
-                                    {trainLineCounts.map(([line, count]) => (
-                                        <span key={line} className="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
-                                            {line}: {count}
-                                        </span>
-                                    ))}
-                                </div>
-                                {location.Differences.map(diff => (
-                                    <DifferenceItem key={diff.DayInYear + diff.PlannedArrivalTime + diff.PlannedArrivalTime} difference={diff} />
-                                ))}
-                            </Accordion>
-                        ); */
-                    })
+                    );
                 })
             )}
         </PageTemplate>
