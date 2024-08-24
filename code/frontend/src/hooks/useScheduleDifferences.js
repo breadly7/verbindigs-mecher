@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { getScheduleDifferences } from '../services/apiService';
 
-const useScheduleDifferences = (selectedStops) => {
+const useScheduleDifferences = (selectedStops, startDate, endDate) => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -18,7 +18,7 @@ const useScheduleDifferences = (selectedStops) => {
             try {
                 setLoading(true);
                 const stopIds = selectedStops.map(stop => stop.value);
-                const result = await getScheduleDifferences(stopIds);
+                const result = await getScheduleDifferences(stopIds, startDate, endDate);
                 setData(result);
             } catch (error) {
                 setError('Error fetching data');
@@ -29,7 +29,7 @@ const useScheduleDifferences = (selectedStops) => {
         };
 
         fetchData();
-    }, [selectedStops]);
+    }, [selectedStops, startDate, endDate]);
 
     return { data, loading, error };
 };

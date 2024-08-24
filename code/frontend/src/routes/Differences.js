@@ -16,7 +16,9 @@ import { getTrainLineCounts, getTotalTrainLineCounts, getTotalDifferencesCount }
 const Differences = () => {
     const [selectedStops, setSelectedStops] = useState([]);
     const [selectedTrainLine, setSelectedTrainLine] = useState(null);
-    const { data, loading, error } = useScheduleDifferences(selectedStops);
+    const [startDate, setStartDate] = useState('2024-01-03');
+    const [endDate, setEndDate] = useState('');
+    const { data, loading, error } = useScheduleDifferences(selectedStops, startDate, endDate);
 
     const loadStops = async inputValue => {
         const results = await getSearchStop(inputValue);
@@ -31,8 +33,22 @@ const Differences = () => {
         setSelectedTrainLine(line === selectedTrainLine ? null : line);
     };
 
+    const handleStartDateChange = (e) => {
+        setStartDate(e.target.value);
+    };
+
+    const handleEndDateChange = (e) => {
+        setEndDate(e.target.value);
+    };
+
     return (
         <PageTemplate title="Differences (broken connections)">
+            <div className="mb-2">
+                <label className="mr-2">Start Date:</label>
+                <input type="date" value={startDate} onChange={handleStartDateChange} className="mr-4" />
+                <label className="mr-2">End Date:</label>
+                <input type="date" value={endDate} onChange={handleEndDateChange} />
+            </div>
             <AsyncSelect
                 isMulti
                 cacheOptions
