@@ -12,35 +12,38 @@ export const fetchData = async (endpoint) => {
 };
 
 export const getScheduleDifferences = async () => {
-	// return await fetchData('/schedule/diff');
-    return Promise.resolve([
-        {
-            "name": "Bern",
-            "differences": [
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve([
                 {
-                    "date": "2021-08-01",
-                    "train_nr": "123",
-                    "planned_arrival_time": "16:00",
-                    "construction_arrival_time": "16:10"
+                    "name": "Bern",
+                    "differences": [
+                        {
+                            "date": "2021-08-01",
+                            "train_nr": "123",
+                            "planned_arrival_time": "16:00",
+                            "construction_arrival_time": "16:10"
+                        },
+                        {
+                            "date": "2021-08-01",
+                            "train_nr": "124",
+                            "planned_arrival_time": "17:00",
+                            "construction_arrival_time": "17:10"
+                        },
+                    ]
                 },
                 {
-                    "date": "2021-08-01",
-                    "train_nr": "124",
-                    "planned_arrival_time": "17:00",
-                    "construction_arrival_time": "17:10"
-                },
-            ]
-        },
-        {
-            "name": "Thun",
-            "differences": [
-                {
-                    "date": "2021-08-01",
-                    "train_nr": "234",
-                    "planned_arrival_time": "16:00",
-                    "construction_arrival_time": "16:10"
-                },
-            ]
-        }
-    ])
+                    "name": "Thun",
+                    "differences": [
+                        {
+                            "date": "2021-08-01",
+                            "train_nr": "234",
+                            "planned_arrival_time": "16:00",
+                            "construction_arrival_time": "16:10"
+                        },
+                    ]
+                }
+            ]);
+        }, 500);
+    });
 };
