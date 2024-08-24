@@ -1,13 +1,19 @@
 package models
 
+import "time"
+
 type Trip struct {
 	StopName         string
 	StopId           string
+	TrainNumber      string
+	VehicleType      string
+	ServiceLine      string
 	PreviousStopName string
 	PreviousStopId   string
 	DepTime          string
 	ArrTime          string
 	Content          string
+	TrainLineStops   []LineStop
 }
 
 type StationDiff struct {
@@ -23,7 +29,7 @@ type LineStop struct {
 }
 
 type Diff struct {
-	DayInYear          int
+	Date               time.Time
 	TrainNumber        string
 	TrainLine          string
 	PlannedArrivalTime string

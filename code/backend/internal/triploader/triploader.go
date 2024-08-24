@@ -8,12 +8,12 @@ import (
 	"regexp"
 )
 
-func Loadtrips(dbpath string, stopId string, dayInYear int) (*[]models.Trip, error) {
+func LoadTrips(dbpath string, stopId string, dayInYear int) (*[]models.Trip, error) {
 	var re = regexp.MustCompile(`(?m)^(\d+)\s+([A-Za-zäöüÄÖÔÜÙÛÁÀËÉÈÙÂÎÏŸŒßùûòôâáàéèëœîïÿ,.()/\s-]+?)\s+(-?\d{5})\s+(-?\d{5})?\s+%`)
 
 	searchDB, err := sql.Open("sqlite3", dbpath)
 	var trips []models.Trip
-	res, err := searchDB.Query(fmt.Sprintf("SELECT stops.stop_name, group_concat(fplan_stop_times.stop_id) AS stop_id, group_concat(fplan_stop_times.stop_departure) AS stop_deps, group_concat(fplan_stop_times.stop_arrival) AS stop_arrs, fplan.fplan_content FROM fplan, fplan_trip_bitfeld, calendar, fplan_stop_times, stops WHERE fplan.row_idx=fplan_trip_bitfeld.fplan_row_idx AND stops.stop_id=fplan_stop_times.stop_id AND fplan_trip_bitfeld.fplan_trip_bitfeld_id = fplan_stop_times.fplan_trip_bitfeld_id and fplan_stop_times.stop_id ='%s' AND fplan_trip_bitfeld.service_id = calendar.service_id AND SUBSTR(calendar.day_bits, %d, 1) = '1' GROUP BY fplan_trip_bitfeld.fplan_trip_bitfeld_id;", stopId, dayInYear))
+	res, err := searchDB.Query(fmt.Sprintf("SELECT stops.stop_name, fplan.vehicle_type, fplan.service_line, fplan.fplan_trip_id as train_number, group_concat(fplan_stop_times.stop_id) AS stop_id, group_concat(fplan_stop_times.stop_departure) AS stop_deps, group_concat(fplan_stop_times.stop_arrival) AS stop_arrs, fplan.fplan_content FROM fplan, fplan_trip_bitfeld, calendar, fplan_stop_times, stops WHERE fplan.row_idx=fplan_trip_bitfeld.fplan_row_idx AND stops.stop_id=fplan_stop_times.stop_id AND fplan_trip_bitfeld.fplan_trip_bitfeld_id = fplan_stop_times.fplan_trip_bitfeld_id and fplan_stop_times.stop_id ='%s' AND fplan_trip_bitfeld.service_id = calendar.service_id AND SUBSTR(calendar.day_bits, %d, 1) = '1' GROUP BY fplan_trip_bitfeld.fplan_trip_bitfeld_id;", stopId, dayInYear))
 
 	if err != nil {
 		return nil, errors.New("failed to query")
@@ -22,7 +22,7 @@ func Loadtrips(dbpath string, stopId string, dayInYear int) (*[]models.Trip, err
 	for res.Next() {
 		item := models.Trip{}
 
-		err = res.Scan(&item.StopName, &item.StopId, &item.DepTime, &item.ArrTime, &item.Content)
+		err = res.Scan(&item.StopName, &item.VehicleType, &item.ServiceLine, &item.TrainNumber, &item.StopId, &item.DepTime, &item.ArrTime, &item.Content)
 		if err != nil {
 			return nil, errors.New("failed to scan")
 		}
@@ -33,6 +33,7 @@ func Loadtrips(dbpath string, stopId string, dayInYear int) (*[]models.Trip, err
 
 		matches := re.FindAllStringSubmatch(item.Content, -1)
 
+		item.TrainLineStops = getTrainLineStopsByMatches(matches)
 		for i, v := range matches {
 			if v[1] == stopId {
 				if i != 0 {
@@ -54,4 +55,31 @@ func Loadtrips(dbpath string, stopId string, dayInYear int) (*[]models.Trip, err
 	}(searchDB)
 
 	return &trips, nil
+}
+
+func getTrainLineStopsByMatches(matches [][]string) []models.LineStop {
+	trainLineStops := make([]models.LineStop, 0)
+
+	for index, _ := range matches {
+		var depTime, arrTime string
+		if index == 0 {
+			arrTime = ""
+			depTime = matches[index][3]
+		} else if index == len(matches) {
+			depTime = matches[index][3]
+			depTime = ""
+		} else {
+			arrTime = matches[index][3]
+			depTime = matches[index][4]
+		}
+
+		trainLineStops = append(trainLineStops, models.LineStop{
+			StopId:   matches[index][1],
+			StopName: matches[index][2],
+			DepTime:  depTime,
+			ArrTime:  arrTime,
+		})
+	}
+
+	return trainLineStops
 }

@@ -2,6 +2,7 @@ package tripcomparator
 
 import (
 	"github.com/verbindigs-mecher/internal/models"
+	"time"
 )
 
 func CompareTrips(plannedTrips *[]models.Trip, constructionTrips *[]models.Trip, dayInYear int) *[]models.Diff {
@@ -21,10 +22,12 @@ func CompareTrips(plannedTrips *[]models.Trip, constructionTrips *[]models.Trip,
 
 		if !tripFound {
 			newDiff := models.Diff{
-				DayInYear:          dayInYear,
+				Date:               time.Date(2023, 12, 10, 0, 0, 0, 0, time.Local).AddDate(0, 0, dayInYear),
+				TrainNumber:        plannedTrip.TrainNumber,
+				TrainLine:          plannedTrip.VehicleType + plannedTrip.ServiceLine,
 				PlannedArrivalTime: plannedTrip.ArrTime,
 				PreviousStop:       plannedTrip.PreviousStopName,
-				TrainLineStops:     []models.LineStop{},
+				TrainLineStops:     plannedTrip.TrainLineStops,
 			}
 
 			diffs = append(diffs, newDiff)
