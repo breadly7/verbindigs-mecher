@@ -16,7 +16,7 @@ const DifferenceItem = ({ difference, currentStop }) => {
 				</thead>
 				<tbody class="bg-white divide-y divide-gray-200">
 					{difference.TrainLineStops.map((stop, index) => (
-						<tr key={index}>
+						<tr key={index} style={{ borderBottom: stop.StopName === currentStop ? '1px solid darkgrey' : undefined }}>
 							<td class="px-2 py-1 whitespace-nowrap text-xs font-medium text-gray-900" style={{ fontWeight: stop.StopName === currentStop ? 'bold' : 'normal' }}>{stop.StopName}</td>
 							<td class="px-2 py-1 whitespace-nowrap text-xs text-gray-500">{stop.ArrTime ? formatTime(stop.ArrTime) : 'N/A'}</td>
 							<td class="px-2 py-1 whitespace-nowrap text-xs text-gray-500">{stop.DepTime ? formatTime(stop.DepTime) : 'N/A'}</td>

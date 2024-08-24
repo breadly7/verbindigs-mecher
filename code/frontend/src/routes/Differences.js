@@ -89,7 +89,7 @@ const Differences = () => {
                         <Accordion key={location.Name} title={location.Name} itemCount={getTotalDifferencesCount(location.DifferencesPerDay)}>
                             <div className="flex flex-wrap mb-4">
                                 {totalTrainLineCounts.map(([line, count]) => (
-                                    <span key={line} className="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+                                    <span key={line} className="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 mb-1 px-2.5 py-0.5 rounded">
                                         {line}: {count}
                                     </span>
                                 ))}
@@ -100,7 +100,7 @@ const Differences = () => {
                                     <Accordion key={diffPerDay.Date} title={new Date(diffPerDay.Date).toLocaleDateString()} itemCount={diffPerDay.Differences.length} isSpecificDay={true}>
                                         <div className="flex flex-wrap mb-4">
                                             {trainLineCounts.map(([line, count]) => (
-                                                <span key={line} className="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+                                                <span key={line} className="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 mb-1 px-2.5 py-0.5 rounded">
                                                     {line}: {count}
                                                 </span>
                                             ))}
