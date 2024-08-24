@@ -7,17 +7,16 @@ const Home = () => {
     const [backendVersion, setBackendVersion] = useState(null);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchBackendStatus= async () => {
-            try {
-                const status = await getStatus();
-                setBackendVersion(status.version);
-            } catch (error) {
-                console.error('Error fetching backend version:', error);
-                setError('Error fetching backend version');
-            }
-        };
+    const fetchBackendStatus = async () => {
+        try {
+            const status = await getStatus();
+            setBackendVersion(status.version);
+        } catch (error) {
+            setError('Error fetching backend version');
+        }
+    };
 
+    useEffect(() => {
         fetchBackendStatus();
     }, []);
 
