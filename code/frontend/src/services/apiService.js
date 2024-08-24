@@ -14,3 +14,7 @@ export const fetchData = async (endpoint) => {
 export const getScheduleDifferences = async () => {
     return fetchData('/schedule/diffs');
 };
+
+export const getStatus = async () => {
+	return fetchData('/status');
+}

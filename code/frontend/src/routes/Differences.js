@@ -31,7 +31,7 @@ const Differences = () => {
                 </div>
             ) : (
                 data && data.map(location => (
-                    <Accordion key={location.Name} title={location.Name}>
+                    <Accordion key={location.Name} title={location.Name} itemCount={location.Differences.length}>
                         {location.Differences.map(diff => (
                             <DifferenceItem key={diff.DayInYear + diff.PlannedArrivalTime + diff.PlannedArrivalTime} difference={diff} />
                         ))}

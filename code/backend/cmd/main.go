@@ -7,6 +7,8 @@ import (
 	"github.com/verbindigs-mecher/internal/web"
 )
 
+const version = "1.0.0"
+
 func main() {
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
@@ -14,7 +16,7 @@ func main() {
 	}))
 
 	apiGroup := r.Group("/api")
-	web.RegisterStatusRoutes(apiGroup)
+	web.RegisterStatusRoutes(apiGroup, version)
 	web.RegisterScheduleRoutes(apiGroup)
 
 	err := r.Run("localhost:8080")

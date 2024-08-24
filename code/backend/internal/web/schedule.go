@@ -15,8 +15,8 @@ func RegisterScheduleRoutes(r *gin.RouterGroup) {
 }
 
 func scheduleDiffsEndpoint(c *gin.Context) {
-	stationIds := []string{"8507483", "8507000", "8503000"}
-	stationNames := []string{"Spiez", "Bern", "Zürich HB"}
+	stationIds := []string{"8507483" /*, "8507000", "8503000" */}
+	stationNames := []string{"Spiez" /*, "Bern", "Zürich HB"*/}
 
 	stationDiffs := make([]models.StationDiff, 0)
 	for i := range stationIds {
