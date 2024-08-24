@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -47,23 +48,46 @@ func findStationEndpoint(c *gin.Context) {
 	c.JSON(http.StatusOK, stops)
 }
 
+func findStationName(stationId string) string {
+	searchDB, err := sql.Open("sqlite3", "./db/planned_schedule.sqlite")
+	if err != nil {
+		return ""
+	}
+
+	res, err := searchDB.Query(fmt.Sprintf("SELECT stop_name FROM stops WHERE stops.stop_id='%s'", stationId))
+
+	if err != nil {
+		return ""
+	}
+
+	for res.Next() {
+		name := ""
+		err := res.Scan(&name)
+		if err != nil {
+			return ""
+		}
+		return name
+	}
+
+	return ""
+}
+
 func scheduleDiffsEndpoint(c *gin.Context) {
-	stationIds := []string{"8507483"}
-	stationNames := []string{"Spiez"}
+	stationIds := c.Query("stationIds")
 
 	stationDiffs := make([]models.StationDiff, 0)
-	for i := range stationIds {
+	for _, v := range strings.Split(stationIds, ",") {
 		stationDiffsOnDay := make([]models.DayDiff, 0)
 
 		for y := range 366 {
-			plannedTrips, err := triploader.LoadTrips("./db/planned_schedule.sqlite", stationIds[i], y)
+			plannedTrips, err := triploader.LoadTrips("./db/planned_schedule.sqlite", v, y)
 
 			if err != nil {
 				println(err.Error())
 				return
 			}
 
-			constructionTrips, err := triploader.LoadTrips("./db/construction_schedule.sqlite", stationIds[i], y)
+			constructionTrips, err := triploader.LoadTrips("./db/construction_schedule.sqlite", v, y)
 			if err != nil {
 				println(err.Error())
 				return
@@ -81,7 +105,7 @@ func scheduleDiffsEndpoint(c *gin.Context) {
 		}
 
 		stationDiffs = append(stationDiffs, models.StationDiff{
-			Name:              stationNames[i],
+			Name:              findStationName(v),
 			DifferencesPerDay: stationDiffsOnDay,
 		})
 	}
