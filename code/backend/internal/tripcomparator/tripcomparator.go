@@ -24,6 +24,7 @@ func CompareTrips(plannedTrips *[]models.Trip, constructionTrips *[]models.Trip,
 				DayInYear:          dayInYear,
 				PlannedArrivalTime: plannedTrip.ArrTime,
 				PreviousStop:       plannedTrip.PreviousStopName,
+				TrainLineStops:     []models.LineStop{},
 			}
 
 			diffs = append(diffs, newDiff)

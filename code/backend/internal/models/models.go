@@ -15,8 +15,19 @@ type StationDiff struct {
 	Differences []Diff
 }
 
+type LineStop struct {
+	StopId   string
+	StopName string
+	DepTime  string
+	ArrTime  string
+}
+
 type Diff struct {
 	DayInYear          int
+	TrainNumber        string
+	TrainLine          string
 	PlannedArrivalTime string
 	PreviousStop       string
+	TrainLineStops     []LineStop
+	Agency             string
 }
