@@ -32,6 +32,10 @@ const Differences = () => {
         return Object.entries(counts).sort((a, b) => b[1] - a[1]);;
     };
 
+    const getTotalDifferencesCount = (differencesPerDay) => {
+        return differencesPerDay.reduce((total, day) => total + day.Differences.length, 0);
+    };
+
     return (
         <PageTemplate title="Differences">
             {loading ? (
@@ -40,21 +44,36 @@ const Differences = () => {
                 </div>
             ) : (
                 data && data.map(location => {
-                    const trainLineCounts = getTrainLineCounts(location.Differences);
                     return (
-                        <Accordion key={location.Name} title={location.Name} itemCount={location.Differences.length}>
-                            <div className="flex flex-wrap mb-4">
-                                {trainLineCounts.map(([line, count]) => (
-                                    <span key={line} className="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
-                                        {line}: {count}
-                                    </span>
-                                ))}
-                            </div>
-                            {location.Differences.map(diff => (
-                                <DifferenceItem key={diff.DayInYear + diff.PlannedArrivalTime + diff.PlannedArrivalTime} difference={diff} />
-                            ))}
+                        <Accordion key={location.Name} title={location.Name} itemCount={getTotalDifferencesCount(location.DifferencesPerDay)}>
+                            {location.DifferencesPerDay.map(diffPerDay => {
+                                return (
+                                    <Accordion key={diffPerDay.Date} title={new Date(diffPerDay.Date).toLocaleDateString()} itemCount={diffPerDay.Differences.length}>
+                                        {diffPerDay.Differences.map(diff => (
+                                            <DifferenceItem key={diff.TrainNumber} difference={diff} />
+                                        ))}
+                                    </Accordion>
+                                );
+                            })}
                         </Accordion>
-                    );
+                    )
+                    return location.DifferencesPerDay.map(diffPerDay => {
+                        /* const trainLineCounts = getTrainLineCounts(location.Differences);
+                        return (
+                            <Accordion key={location.Name} title={location.Name} itemCount={location.Differences.length}>
+                                <div className="flex flex-wrap mb-4">
+                                    {trainLineCounts.map(([line, count]) => (
+                                        <span key={line} className="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+                                            {line}: {count}
+                                        </span>
+                                    ))}
+                                </div>
+                                {location.Differences.map(diff => (
+                                    <DifferenceItem key={diff.DayInYear + diff.PlannedArrivalTime + diff.PlannedArrivalTime} difference={diff} />
+                                ))}
+                            </Accordion>
+                        ); */
+                    })
                 })
             )}
         </PageTemplate>
