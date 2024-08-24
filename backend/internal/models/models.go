@@ -1,12 +1,9 @@
 package models
 
 type Trip struct {
-	FPlanId       string
-	TripId        string
-	BitfeldId     string
-	ServiceId     string
-	Stop          string
-	ArrivalTime   string
-	DepartureTime string
-	VehicleType   string
+	StopName string
+	StopId   string
+	DepTime  string
+	ArrTime  string
+	Content  string
 }

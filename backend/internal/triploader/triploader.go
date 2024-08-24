@@ -3,14 +3,17 @@ package triploader
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"github.com/verbindigs-mecher/internal/models"
+	"regexp"
 )
 
 func Loadtrips(dbpath string) (*[]models.Trip, error) {
-	searchDB, err := sql.Open("sqlite3", dbpath)
+	var re = regexp.MustCompile(`(?m)^(\d+)\s+([A-Za-zäöüÄÖÜß\s-]+?)\s+(-?\d{5})\s+(-?\d{5})?\s+%`)
 
+	searchDB, err := sql.Open("sqlite3", dbpath)
 	var trips []models.Trip
-	res, err := searchDB.Query("select fbf.fplan_row_idx, ft.fplan_trip_bitfeld_id, fbf.service_id, s.stop_name, ft.stop_arrival, ft.stop_departure, f.vehicle_type from fplan as f join fplan_trip_bitfeld as fbf on f.row_idx=fbf.fplan_row_idx join fplan_stop_times as ft on fbf.fplan_trip_bitfeld_id=ft.fplan_trip_bitfeld_id join stops as s on s.stop_id=ft.stop_id where s.stop_name='Mauchen, Berner'")
+	res, err := searchDB.Query("SELECT stops.stop_name, group_concat(fplan_stop_times.stop_id) AS stop_id, group_concat(fplan_stop_times.stop_departure) AS stop_deps, group_concat(fplan_stop_times.stop_arrival) AS stop_arrs, fplan.fplan_content FROM fplan, fplan_trip_bitfeld, calendar, fplan_stop_times, stops WHERE fplan.row_idx=fplan_trip_bitfeld.fplan_row_idx AND stops.stop_id=fplan_stop_times.stop_id AND fplan_trip_bitfeld.fplan_trip_bitfeld_id = fplan_stop_times.fplan_trip_bitfeld_id and fplan_stop_times.stop_id ='8507000' AND fplan_trip_bitfeld.service_id = calendar.service_id AND SUBSTR(calendar.day_bits, 179, 1) = '1' GROUP BY fplan_trip_bitfeld.fplan_trip_bitfeld_id;")
 
 	if err != nil {
 		return nil, errors.New("failed to query")
@@ -18,11 +21,14 @@ func Loadtrips(dbpath string) (*[]models.Trip, error) {
 
 	for res.Next() {
 		item := models.Trip{}
-		err = res.Scan(&item.FPlanId, &item.BitfeldId, &item.ServiceId, &item.Stop, &item.ArrivalTime, &item.DepartureTime, &item.VehicleType)
 
-		item.TripId = item.Stop + item.ServiceId
+		err = res.Scan(&item.StopName, &item.StopId, &item.DepTime, &item.ArrTime, &item.Content)
 		if err != nil {
 			return nil, errors.New("failed to scan")
+		}
+
+		for _, match := range re.FindAllStringSubmatch(item.Content, -1) {
+			fmt.Println(match)
 		}
 		trips = append(trips, item)
 	}
