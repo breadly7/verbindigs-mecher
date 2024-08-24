@@ -9,7 +9,7 @@ import (
 )
 
 func Loadtrips(dbpath string, stopId string, dayInYear int) (*[]models.Trip, error) {
-	var re = regexp.MustCompile(`(?m)^(\d+)\s+([A-Za-zäöüÄÖÜß\s-]+?)\s+(-?\d{5})\s+(-?\d{5})?\s+%`)
+	var re = regexp.MustCompile(`(?m)^(\d+)\s+([A-Za-zäöüÄÖÔÜÙÛÁÀËÉÈÙÂÎÏŸŒßùûòôâáàéèëœîïÿ,.()/\s-]+?)\s+(-?\d{5})\s+(-?\d{5})?\s+%`)
 
 	searchDB, err := sql.Open("sqlite3", dbpath)
 	var trips []models.Trip
