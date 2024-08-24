@@ -41,3 +41,8 @@ type Diff struct {
 	TrainLineStops     []LineStop
 	Agency             string
 }
+
+type Stop struct {
+	Name string
+	Id   string
+}

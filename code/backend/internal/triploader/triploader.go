@@ -12,6 +12,10 @@ func LoadTrips(dbpath string, stopId string, dayInYear int) (*[]models.Trip, err
 	var re = regexp.MustCompile(`(?m)^(\d+)\s+([A-Za-zäöüÄÖÔÜÙÛÁÀËÉÈÙÂÎÏŸŒßùûòôâáàéèëœîïÿ,.()/\s-]+?)\s+(-?\d{5})\s+(-?\d{5})?\s+%`)
 
 	searchDB, err := sql.Open("sqlite3", dbpath)
+	if err != nil {
+		return nil, errors.New("failed to open db")
+	}
+
 	var trips []models.Trip
 	res, err := searchDB.Query(fmt.Sprintf("SELECT stops.stop_name, fplan.vehicle_type, fplan.service_line, fplan.fplan_trip_id as train_number, group_concat(fplan_stop_times.stop_id) AS stop_id, group_concat(fplan_stop_times.stop_departure) AS stop_deps, group_concat(fplan_stop_times.stop_arrival) AS stop_arrs, fplan.fplan_content, agency.short_name FROM fplan, fplan_trip_bitfeld, calendar, fplan_stop_times, stops, agency WHERE fplan.row_idx=fplan_trip_bitfeld.fplan_row_idx AND stops.stop_id=fplan_stop_times.stop_id AND fplan_trip_bitfeld.fplan_trip_bitfeld_id = fplan_stop_times.fplan_trip_bitfeld_id AND fplan_stop_times.stop_id ='%s' AND fplan_trip_bitfeld.service_id = calendar.service_id AND agency.agency_id=fplan.agency_id AND SUBSTR(calendar.day_bits, %d, 1) = '1' GROUP BY fplan_trip_bitfeld.fplan_trip_bitfeld_id;", stopId, dayInYear))
 
