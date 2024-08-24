@@ -13,6 +13,7 @@ type Trip struct {
 	DepTime          string
 	ArrTime          string
 	Content          string
+	Agency           string
 	TrainLineStops   []LineStop
 }
 
