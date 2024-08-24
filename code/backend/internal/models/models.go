@@ -18,8 +18,8 @@ type Trip struct {
 }
 
 type StationDiff struct {
-	Name        string
-	Differences []Diff
+	Name              string
+	DifferencesPerDay []DayDiff
 }
 
 type LineStop struct {
@@ -29,8 +29,11 @@ type LineStop struct {
 	ArrTime  string
 }
 
+type DayDiff struct {
+	Date        time.Time
+	Differences []Diff
+}
 type Diff struct {
-	Date               time.Time
 	TrainNumber        string
 	TrainLine          string
 	PlannedArrivalTime string

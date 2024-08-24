@@ -2,6 +2,7 @@ package web
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/verbindigs-mecher/internal/models"
@@ -20,7 +21,8 @@ func scheduleDiffsEndpoint(c *gin.Context) {
 
 	stationDiffs := make([]models.StationDiff, 0)
 	for i := range stationIds {
-		stationDiffsOnDay := make([]models.Diff, 0)
+		stationDiffsOnDay := make([]models.DayDiff, 0)
+
 		for y := range 366 {
 			plannedTrips, err := triploader.LoadTrips("./db/planned_schedule.sqlite", stationIds[i], y)
 
@@ -40,12 +42,16 @@ func scheduleDiffsEndpoint(c *gin.Context) {
 				continue
 			}
 
-			stationDiffsOnDay = append(stationDiffsOnDay, *diffsOnDay...)
+			stationDiffsOnDay = append(stationDiffsOnDay, models.DayDiff{
+				Date:        time.Date(2023, 12, 10, 0, 0, 0, 0, time.Local).AddDate(0, 0, y),
+				Differences: *diffsOnDay,
+			})
 
 		}
+
 		stationDiffs = append(stationDiffs, models.StationDiff{
-			Name:        stationNames[i],
-			Differences: stationDiffsOnDay,
+			Name:              stationNames[i],
+			DifferencesPerDay: stationDiffsOnDay,
 		})
 	}
 	c.JSON(http.StatusOK, stationDiffs)
