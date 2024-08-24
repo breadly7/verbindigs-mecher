@@ -9,22 +9,21 @@ const DifferenceItem = ({ difference }) => {
 			<table class="min-w-full divide-y divide-gray-200">
 				<thead class="bg-gray-50">
 					<tr>
-						<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stop</th>
-						<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Arrival</th>
-						<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Departure</th>
+						<th class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stop</th>
+						<th class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Arrival</th>
+						<th class="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Departure</th>
 					</tr>
 				</thead>
 				<tbody class="bg-white divide-y divide-gray-200">
 					{difference.TrainLineStops.map((stop, index) => (
 						<tr key={index}>
-							<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{stop.StopName}</td>
-							<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{stop.ArrTime ? formatTime(stop.ArrTime) : 'N/A'}</td>
-							<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{stop.DepTime ? formatTime(stop.DepTime) : 'N/A'}</td>
+							<td class="px-2 py-1 whitespace-nowrap text-xs font-medium text-gray-900">{stop.StopName}</td>
+							<td class="px-2 py-1 whitespace-nowrap text-xs text-gray-500">{stop.ArrTime ? formatTime(stop.ArrTime) : 'N/A'}</td>
+							<td class="px-2 py-1 whitespace-nowrap text-xs text-gray-500">{stop.DepTime ? formatTime(stop.DepTime) : 'N/A'}</td>
 						</tr>
 					))}
 				</tbody>
 			</table>
-
 		</Accordion>
 	);
 };
