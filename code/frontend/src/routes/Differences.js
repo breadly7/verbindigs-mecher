@@ -97,7 +97,7 @@ const Differences = () => {
                             {location.DifferencesPerDay.map(diffPerDay => {
                                 const trainLineCounts = Object.entries(getTrainLineCounts(diffPerDay.Differences)).sort((a, b) => b[1] - a[1]);
                                 return (
-                                    <Accordion key={diffPerDay.Date} title={new Date(diffPerDay.Date).toLocaleDateString()} itemCount={diffPerDay.Differences.length}>
+                                    <Accordion key={diffPerDay.Date} title={new Date(diffPerDay.Date).toLocaleDateString()} itemCount={diffPerDay.Differences.length} isSpecificDay={true}>
                                         <div className="flex flex-wrap mb-4">
                                             {trainLineCounts.map(([line, count]) => (
                                                 <span key={line} className="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
