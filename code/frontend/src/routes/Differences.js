@@ -8,13 +8,14 @@ import DifferenceItem from '../components/DifferenceItem';
 
 const Differences = () => {
     const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [selectedStops, setSelectedStops] = useState([]);
 
     useEffect(() => {
         const getData = async () => {
             if (selectedStops.length === 0) {
                 setLoading(false);
+                setData(null);
                 return;
             }
 
@@ -113,6 +114,9 @@ const Differences = () => {
                         </Accordion>
                     );
                 })
+            )}
+            {!loading && (!data || data.length === 0) && (
+                <p className="text-gray-500">Please select a stop!</p>
             )}
         </PageTemplate>
     );
