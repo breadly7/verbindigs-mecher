@@ -106,7 +106,7 @@ const Differences = () => {
                                             ))}
                                         </div>
                                         {diffPerDay.Differences.map(diff => (
-                                            <DifferenceItem key={diff.TrainNumber} difference={diff} />
+                                            <DifferenceItem key={diff.TrainNumber} difference={diff} currentStop={location.Name} />
                                         ))}
                                     </Accordion>
                                 );
