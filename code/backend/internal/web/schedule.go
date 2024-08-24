@@ -76,6 +76,12 @@ func scheduleDiffsEndpoint(c *gin.Context) {
 	stationIds := c.Query("stationIds")
 
 	stationDiffs := make([]models.StationDiff, 0)
+
+	if stationIds == "" {
+		c.JSON(http.StatusOK, stationDiffs)
+		return
+	}
+
 	for _, v := range strings.Split(stationIds, ",") {
 		stationDiffsOnDay := make([]models.DayDiff, 0)
 
