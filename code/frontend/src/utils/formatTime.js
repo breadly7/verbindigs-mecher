@@ -1,6 +1,9 @@
 const formatTime = time => {
+    if (time.length > 4) {
+        time = time.slice(-4);
+    }
     if (time.length !== 4) {
-        throw new Error('Time must be a four-digit string');
+        throw new Error('Invalid time');
     }
 
     let hours = parseInt(time.slice(0, 2), 10);
