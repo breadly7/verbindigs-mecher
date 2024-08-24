@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import AsyncSelect from 'react-select/async';
+
 import PageTemplate from '../components/PageTemplate';
-import { getScheduleDifferences } from '../services/apiService';
+import { getScheduleDifferences, getSearchStop } from '../services/apiService';
 import Accordion from '../components/Accordion';
 import DifferenceItem from '../components/DifferenceItem';
 
@@ -47,8 +49,24 @@ const Differences = () => {
         return differencesPerDay.reduce((total, day) => total + day.Differences.length, 0);
     };
 
+    const searchStop = async inputValue => {
+        const results = await getSearchStop(inputValue);
+
+        return results.map(result => ({
+            value: result.Id,
+            label: result.Name
+        }));
+    };
+
     return (
         <PageTemplate title="Differences (broken connections)">
+            <AsyncSelect
+                isMulti
+                cacheOptions
+                defaultOptions
+                loadOptions={searchStop}
+                className="mb-2"
+            />
             {loading ? (
                 <div className="flex justify-center items-center h-64">
                     <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
