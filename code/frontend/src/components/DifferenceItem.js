@@ -5,7 +5,7 @@ import Accordion from './Accordion';
 
 const DifferenceItem = ({ difference }) => {
 	return (
-		<Accordion title={`${new Date(difference.Date).toLocaleDateString()} - ${difference.TrainLine} [${difference.TrainNumber}] from ${difference.PreviousStop} at ${formatTime(difference.PlannedArrivalTime)}`} itemCount={difference.TrainLineStops.length}>
+		<Accordion title={`${new Date(difference.Date).toLocaleDateString()} - ${difference.TrainLine} [${difference.TrainNumber}] from ${difference.PreviousStop} at ${formatTime(difference.PlannedArrivalTime)}`} itemCount={difference.TrainLineStops.length + ' stops'}>
 			<ul>
 				<li><strong>Agency</strong>: {difference.Agency}</li>
 				{difference.TrainLineStops.map((stop, index) => (

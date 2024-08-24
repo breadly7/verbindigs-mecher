@@ -19,7 +19,7 @@ const Accordion = ({ title, itemCount, children }) => {
                 </div>
             </button>
             {isOpen && (
-                <div className="px-6 py-4 bg-white">
+                <div className="px-6 py-1 bg-white">
                     {children}
                 </div>
             )}
