@@ -10,8 +10,9 @@ type Trip struct {
 	Content          string
 }
 
-type DiffResponse struct {
-	Result []Diff
+type StationDiff struct {
+	Name        string
+	Differences []Diff
 }
 
 type Diff struct {
