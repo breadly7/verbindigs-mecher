@@ -9,11 +9,18 @@ import DifferenceItem from '../components/DifferenceItem';
 const Differences = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [selectedStops, setSelectedStops] = useState([]);
 
     useEffect(() => {
         const getData = async () => {
+            if (selectedStops.length === 0) {
+                setLoading(false);
+                return;
+            }
+
             try {
-                const result = await getScheduleDifferences();
+                const stopIds = selectedStops.map(stop => stop.value);
+                const result = await getScheduleDifferences(stopIds);
                 setData(result);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -23,7 +30,7 @@ const Differences = () => {
         };
 
         getData();
-    }, []);
+    }, [selectedStops]);
 
     const getTrainLineCounts = (differences) => {
         const counts = {};
@@ -65,6 +72,7 @@ const Differences = () => {
                 cacheOptions
                 defaultOptions
                 loadOptions={searchStop}
+                onChange={setSelectedStops}
                 className="mb-2"
             />
             {loading ? (

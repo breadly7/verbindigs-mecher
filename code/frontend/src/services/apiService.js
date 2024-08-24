@@ -14,8 +14,8 @@ export const fetchData = async (endpoint, queryParams = {}) => {
 	}
 };
 
-export const getScheduleDifferences = async () => {
-    return fetchData('/schedule/diffs');
+export const getScheduleDifferences = async stopIds => {
+    return fetchData('/schedule/diffs', { stationIds: stopIds.join(',') });
 };
 
 export const getSearchStop = async term => {
