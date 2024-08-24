@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const Accordion = ({ title, itemCount, agency, isSpecificDay, children }) => {
+const Accordion = ({ title, itemCount, rightText, isSpecificDay, children }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleAccordion = () => {
@@ -15,7 +15,7 @@ const Accordion = ({ title, itemCount, agency, isSpecificDay, children }) => {
             >
                 <div className="flex justify-between items-center">
                     <span>{title} {itemCount && `(${itemCount})`}</span>
-                    <span>{agency ? (<span className={"mr-2"}>Agency: {agency}</span>) : ""}{isOpen ? '-' : '+'}</span>
+                    <span>{rightText ? (<span className={"mr-2"}>{rightText}</span>) : ""}{isOpen ? '-' : '+'}</span>
                 </div>
             </button>
             {isOpen && (

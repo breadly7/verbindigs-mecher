@@ -5,7 +5,7 @@ import Accordion from './Accordion';
 
 const DifferenceItem = ({ difference }) => {
 	return (
-		<Accordion title={`${difference.TrainLine} [${difference.TrainNumber}] from ${difference.PreviousStop} at ${formatTime(difference.PlannedArrivalTime)}`} agency={difference.Agency}>
+		<Accordion title={`${difference.TrainLine} [${difference.TrainNumber}] from ${difference.PreviousStop} at ${formatTime(difference.PlannedArrivalTime)}`} rightText={`Agency: ${difference.Agency}`}>
 			<table class="min-w-full divide-y divide-gray-200">
 				<thead class="bg-gray-50">
 					<tr>
