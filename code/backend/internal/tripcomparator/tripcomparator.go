@@ -2,7 +2,6 @@ package tripcomparator
 
 import (
 	"errors"
-
 	"github.com/verbindigs-mecher/internal/models"
 )
 
@@ -16,9 +15,9 @@ func CompareTrips(plannedTrips *[]models.Trip, constructionTrips *[]models.Trip,
 			if plannedTrip.PreviousStopId == constructionTrip.PreviousStopId {
 				if plannedTrip.ArrTime == constructionTrip.ArrTime {
 					tripFound = true
+					break
 				}
 			}
-
 		}
 
 		if !tripFound {
