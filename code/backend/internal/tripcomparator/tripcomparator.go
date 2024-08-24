@@ -38,9 +38,9 @@ func CompareTrips(plannedTrips *[]models.Trip, constructionTrips *[]models.Trip,
 	return &diffs
 }
 
-func FindAlternateTrain(agency string, trainNumber string, stopName string, constructionTrips *[]models.Trip, dayInYear int) (*models.Trip, error) {
+func FindAlternateTrain(agency string, trainNumber string, stopId string, constructionTrips *[]models.Trip, dayInYear int) (*models.Trip, error) {
 	for _, constructionTrip := range *constructionTrips {
-		if constructionTrip.StopName == stopName && constructionTrip.TrainNumber == trainNumber && constructionTrip.Agency == agency && constructionTrip.DayInYear == dayInYear {
+		if constructionTrip.StopId == stopId && constructionTrip.TrainNumber == trainNumber && constructionTrip.Agency == agency && constructionTrip.DayInYear == dayInYear {
 			return &constructionTrip, nil
 		}
 	}

@@ -104,13 +104,13 @@ func scheduleDiffsEndpoint(c *gin.Context) {
 				continue
 			}
 
-			for _, diffOnDay := range *diffsOnDay {
-				alternateTrain, err := tripcomparator.FindAlternateTrain(diffOnDay.Agency, diffOnDay.TrainNumber, v, constructionTrips, y)
+			for i, _ := range *diffsOnDay {
+				alternateTrain, err := tripcomparator.FindAlternateTrain((*diffsOnDay)[i].Agency, (*diffsOnDay)[i].TrainNumber, v, constructionTrips, y)
 				if err != nil {
-					diffOnDay.AlternateTrain = nil
+					(*diffsOnDay)[i].AlternateTrain = nil
 					continue
 				}
-				diffOnDay.AlternateTrain = alternateTrain
+				(*diffsOnDay)[i].AlternateTrain = alternateTrain
 			}
 
 			stationDiffsOnDay = append(stationDiffsOnDay, models.DayDiff{
