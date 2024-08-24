@@ -96,8 +96,15 @@ const Differences = () => {
                             </div>
                             {location.DifferencesPerDay.map(diffPerDay => {
                                 const trainLineCounts = Object.entries(getTrainLineCounts(diffPerDay.Differences)).sort((a, b) => b[1] - a[1]);
+                                const hasNoAlternateConnection = diffPerDay.Differences.some(diff => diff.AlternateTrain === null);
                                 return (
-                                    <Accordion key={diffPerDay.Date} title={new Date(diffPerDay.Date).toLocaleDateString()} itemCount={diffPerDay.Differences.length} isSpecificDay={true}>
+                                    <Accordion
+                                        key={diffPerDay.Date}
+                                        title={new Date(diffPerDay.Date).toLocaleDateString()}
+                                        itemCount={diffPerDay.Differences.length}
+                                        isSpecificDay={true}
+                                        color={hasNoAlternateConnection ? 'yellow' : 'blue'}
+                                    >
                                         <div className="flex flex-wrap mb-4">
                                             {trainLineCounts.map(([line, count]) => (
                                                 <span key={line} className="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 mb-1 px-2.5 py-0.5 rounded">
@@ -108,6 +115,11 @@ const Differences = () => {
                                         {diffPerDay.Differences.map(diff => (
                                             <DifferenceItem key={diff.TrainNumber} difference={diff} currentStop={location.Name} />
                                         ))}
+                                        {hasNoAlternateConnection && (
+                                            <div className="mt-4 text-red-500 text-xs">
+                                                Warning: At least one connection has no alternate train.
+                                            </div>
+                                        )}
                                     </Accordion>
                                 );
                             })}
