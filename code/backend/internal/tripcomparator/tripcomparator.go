@@ -40,10 +40,10 @@ func CompareTrips(plannedTrips *[]models.Trip, constructionTrips *[]models.Trip,
 
 func FindAlternateTrain(agency string, trainNumber string, stopId string, constructionTrips *[]models.Trip, dayInYear int) (*models.Trip, error) {
 	for _, constructionTrip := range *constructionTrips {
-		if constructionTrip.StopId == stopId && constructionTrip.TrainNumber == trainNumber && constructionTrip.Agency == agency && constructionTrip.DayInYear == dayInYear {
-			return &constructionTrip, nil
-		} else if constructionTrip.StopId == stopId && constructionTrip.TrainNumber == "10"+trainNumber && constructionTrip.Agency == agency && constructionTrip.DayInYear == dayInYear {
-			return &constructionTrip, nil
+		if constructionTrip.StopId == stopId && constructionTrip.Agency == agency && constructionTrip.DayInYear == dayInYear {
+			if constructionTrip.TrainNumber == trainNumber || constructionTrip.TrainNumber == "10"+trainNumber {
+				return &constructionTrip, nil
+			}
 		}
 	}
 	return nil, errors.New("no alternate train found")
