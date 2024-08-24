@@ -16,33 +16,44 @@ func main() {
 		AllowOrigins: []string{"http://localhost:3000"},
 	}))
 
-	stationId := "8507483"
-	stationName := "Spiez"
-	dayInYear := 93
-
-	plannedTrips, err := triploader.Loadtrips("./db/construction_schedule.sqlite", stationId, dayInYear)
-
-	if err != nil {
-		println(err.Error())
-		return
-	}
-
-	constructionTrips, err := triploader.Loadtrips("./db/planned_schedule.sqlite", stationId, dayInYear)
-	if err != nil {
-		println(err.Error())
-		return
-	}
+	stationIds := []string{"8507483", "8507000", "8503000"}
+	stationNames := []string{"Spiez", "Bern", "Zürich HB"}
 
 	r.GET("/api/schedule/diffs", func(c *gin.Context) {
-		stationDiffs := make([]models.StationDiff, 1)
-		stationDiffs[0] = models.StationDiff{
-			Name:        stationName,
-			Differences: *tripcomparator.CompareTrips(plannedTrips, constructionTrips, dayInYear),
+		stationDiffs := make([]models.StationDiff, 0)
+		for i, _ := range stationIds {
+			stationDiffsOnDay := make([]models.Diff, 0)
+			for y := range 366 {
+				plannedTrips, err := triploader.Loadtrips("./db/construction_schedule.sqlite", stationIds[i], y)
+
+				if err != nil {
+					println(err.Error())
+					return
+				}
+
+				constructionTrips, err := triploader.Loadtrips("./db/planned_schedule.sqlite", stationIds[i], y)
+				if err != nil {
+					println(err.Error())
+					return
+				}
+
+				diffsOnDay := tripcomparator.CompareTrips(plannedTrips, constructionTrips, y)
+				if len(*diffsOnDay) == 0 {
+					continue
+				}
+
+				stationDiffsOnDay = append(stationDiffsOnDay, *diffsOnDay...)
+
+			}
+			stationDiffs = append(stationDiffs, models.StationDiff{
+				Name:        stationNames[i],
+				Differences: stationDiffsOnDay,
+			})
 		}
 		c.JSON(http.StatusOK, stationDiffs)
 	})
 
-	err = r.Run("localhost:8080")
+	err := r.Run("localhost:8080")
 	if err != nil {
 		return
 	}
