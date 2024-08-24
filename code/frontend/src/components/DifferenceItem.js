@@ -70,7 +70,7 @@ const DifferenceItem = ({ difference, currentStop }) => {
 				</tbody>
 			</table>
 			{!difference.AlternateTrain && (
-                <div className="mt-4 text-red-500 text-xs">
+                <div className="my-2 text-red-500 text-xs">
                     Warning: No alternate train was found.
                 </div>
             )}

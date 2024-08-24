@@ -45,7 +45,7 @@ Das Frontend wurde mit React entwickelt, um eine dynamische und reaktive Benutze
 
 ---
 
-- **Effiziente Datenverarbeitung**: Trotz der komplexen Datengrundlage konnten wir eine effiziente Methode entwickeln, um die Fahrplandaten zwischen verschiedenen Versionen zu vergleichen.
+- **Effiziente Datenverarbeitung**: Trotz der komplexen Datengrundlage konnten wir eine effiziente Methode entwickeln, um die Fahrplandaten zwischen zwei Fahrplänen zu vergleichen.
 - **Hohe Performance**: Die Verwendung von Go im Backend ermöglicht eine hohe Performance und effiziente Parallelisierung, was besonders bei der Verarbeitung großer Datenmengen von Vorteil ist.
 - **Robuste Fehlerbehandlung**: Wir haben eine robuste Fehlerbehandlung im Backend implementiert, um sicherzustellen, dass alle API-Endpunkte zuverlässig funktionieren.
 - **Ansprechende Benutzeroberfläche**: Im Frontend haben wir mit React und Tailwind CSS eine dynamische und ansprechende Benutzeroberfläche geschaffen. Die grafische Darstellung der Unterschiede zwischen den Fahrplanversionen ist besonders gut gelungen und bietet den Nutzern eine klare und intuitive Übersicht.

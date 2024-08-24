@@ -55,14 +55,14 @@ const Differences = () => {
                                     color={hasNoAlternateConnection ? 'yellow' : 'blue'}
                                 >
                                     <TrainLineTags counts={trainLineCounts} />
-                                    {diffPerDay.Differences.map(diff => (
-                                        <DifferenceItem key={diff.TrainNumber} difference={diff} currentStop={location.Name} />
-                                    ))}
                                     {hasNoAlternateConnection && (
-                                        <div className="mt-4 text-red-500 text-xs">
+                                        <div className="mb-2 text-red-500 text-xs">
                                             Warning: At least one connection has no alternate train.
                                         </div>
                                     )}
+                                    {diffPerDay.Differences.map(diff => (
+                                        <DifferenceItem key={diff.TrainNumber} difference={diff} currentStop={location.Name} />
+                                    ))}
                                 </Accordion>
                             );
                         })}
