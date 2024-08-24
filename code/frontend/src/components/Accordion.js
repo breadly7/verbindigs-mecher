@@ -1,16 +1,22 @@
 import { useState } from 'react';
 
-const Accordion = ({ title, itemCount, rightText, isSpecificDay, children }) => {
+const Accordion = ({ title, itemCount, rightText, isSpecificDay, children, color = 'blue' }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleAccordion = () => {
         setIsOpen(!isOpen);
     };
 
+    const colorClasses = {
+        blue: 'bg-blue-200 hover:bg-blue-300',
+        green: 'bg-green-200 hover:bg-green-300',
+        yellow: 'bg-yellow-200 hover:bg-yellow-300'
+    };
+
     return (
         <div className="border-b border-gray-200">
             <button
-                className="w-full text-left py-4 px-6 bg-blue-200 hover:bg-blue-300 focus:outline-none"
+                className={`w-full text-left py-4 px-6 focus:outline-none ${colorClasses[color]}`}
                 onClick={toggleAccordion}
             >
                 <div className="flex justify-between items-center">

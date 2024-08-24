@@ -5,7 +5,11 @@ import Accordion from './Accordion';
 
 const DifferenceItem = ({ difference, currentStop }) => {
 	return (
-		<Accordion title={`${difference.TrainLine} [${difference.TrainNumber}] from ${difference.PreviousStop} at ${formatTime(difference.PlannedArrivalTime)}`} rightText={`Agency: ${difference.Agency}`}>
+		<Accordion
+			title={`${difference.TrainLine} [${difference.TrainNumber}] from ${difference.PreviousStop} at ${formatTime(difference.PlannedArrivalTime)}`}
+			rightText={`Agency: ${difference.Agency}`}
+			color={difference.AlternateTrain ? 'blue' : 'yellow'}
+		>
 			<table className="min-w-full divide-y divide-gray-200">
 				<thead className="bg-gray-50">
 					<tr>
@@ -65,6 +69,11 @@ const DifferenceItem = ({ difference, currentStop }) => {
 					)}
 				</tbody>
 			</table>
+			{!difference.AlternateTrain && (
+                <div className="mt-4 text-red-500 text-xs">
+                    Warning: No alternate train was found.
+                </div>
+            )}
 		</Accordion>
 	);
 };
