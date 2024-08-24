@@ -15,6 +15,7 @@ import { getTrainLineCounts, getTotalTrainLineCounts, getTotalDifferencesCount }
 
 const Differences = () => {
     const [selectedStops, setSelectedStops] = useState([]);
+    const [selectedTrainLine, setSelectedTrainLine] = useState(null);
     const { data, loading, error } = useScheduleDifferences(selectedStops);
 
     const loadStops = async inputValue => {
@@ -24,6 +25,10 @@ const Differences = () => {
             value: result.Id,
             label: result.Name
         }));
+    };
+
+    const handleTrainLineClick = (line) => {
+        setSelectedTrainLine(line === selectedTrainLine ? null : line);
     };
 
     return (
@@ -39,11 +44,17 @@ const Differences = () => {
             {loading && <LoadingSpinner />}
             {error && <p className="text-red-600">{error}</p>}
             {!loading && data && data.map(location => {
+                const filteredDifferencesPerDay = selectedTrainLine
+                    ? location.DifferencesPerDay.map(day => ({
+                        ...day,
+                        Differences: day.Differences.filter(difference => difference.TrainLine === selectedTrainLine)
+                    })).filter(day => day.Differences.length > 0)
+                    : location.DifferencesPerDay;
                 const totalTrainLineCounts = Object.entries(getTotalTrainLineCounts(location.DifferencesPerDay)).sort((a, b) => b[1] - a[1]);
                 return (
-                    <Accordion key={location.Name} title={location.Name} itemCount={getTotalDifferencesCount(location.DifferencesPerDay)}>
-                        <TrainLineTags counts={totalTrainLineCounts} />
-                        {location.DifferencesPerDay.map(diffPerDay => {
+                    <Accordion key={location.Name} title={location.Name} itemCount={getTotalDifferencesCount(filteredDifferencesPerDay)}>
+                        <TrainLineTags counts={totalTrainLineCounts} onTagClick={handleTrainLineClick} activeTag={selectedTrainLine} />
+                        {filteredDifferencesPerDay.map(diffPerDay => {
                             const trainLineCounts = Object.entries(getTrainLineCounts(diffPerDay.Differences)).sort((a, b) => b[1] - a[1]);
                             const hasNoAlternateConnection = diffPerDay.Differences.some(diff => diff.AlternateTrain === null);
                             return (
@@ -54,13 +65,13 @@ const Differences = () => {
                                     isSpecificDay={true}
                                     color={hasNoAlternateConnection ? 'yellow' : 'blue'}
                                 >
-                                    <TrainLineTags counts={trainLineCounts} />
+                                    <TrainLineTags counts={trainLineCounts} onTagClick={handleTrainLineClick} activeTag={selectedTrainLine} />
                                     {hasNoAlternateConnection && (
                                         <div className="mb-2 text-red-500 text-xs">
                                             Warning: At least one connection has no alternate train.
                                         </div>
                                     )}
-                                    {diffPerDay.Differences.map(diff => (
+                                    {diffPerDay.Differences.filter(diff => selectedTrainLine === null || diff.TrainLine === selectedTrainLine).map(diff => (
                                         <DifferenceItem key={diff.TrainNumber} difference={diff} currentStop={location.Name} />
                                     ))}
                                 </Accordion>
