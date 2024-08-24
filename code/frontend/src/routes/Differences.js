@@ -23,6 +23,15 @@ const Differences = () => {
         getData();
     }, []);
 
+    const getTrainLineCounts = (differences) => {
+        const counts = {};
+        differences.forEach(diff => {
+            const line = diff.TrainLine || 'Unknown';
+            counts[line] = (counts[line] || 0) + 1;
+        });
+        return Object.entries(counts).sort((a, b) => b[1] - a[1]);;
+    };
+
     return (
         <PageTemplate title="Differences">
             {loading ? (
@@ -30,13 +39,23 @@ const Differences = () => {
                     <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
                 </div>
             ) : (
-                data && data.map(location => (
-                    <Accordion key={location.Name} title={location.Name} itemCount={location.Differences.length}>
-                        {location.Differences.map(diff => (
-                            <DifferenceItem key={diff.DayInYear + diff.PlannedArrivalTime + diff.PlannedArrivalTime} difference={diff} />
-                        ))}
-                    </Accordion>
-                ))
+                data && data.map(location => {
+                    const trainLineCounts = getTrainLineCounts(location.Differences);
+                    return (
+                        <Accordion key={location.Name} title={location.Name} itemCount={location.Differences.length}>
+                            <div className="flex flex-wrap mb-4">
+                                {trainLineCounts.map(([line, count]) => (
+                                    <span key={line} className="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+                                        {line}: {count}
+                                    </span>
+                                ))}
+                            </div>
+                            {location.Differences.map(diff => (
+                                <DifferenceItem key={diff.DayInYear + diff.PlannedArrivalTime + diff.PlannedArrivalTime} difference={diff} />
+                            ))}
+                        </Accordion>
+                    );
+                })
             )}
         </PageTemplate>
     );
