@@ -1,5 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom';
 
+import ErrorBoundary from '../components/ErrorBoundary';
+
 const activeClass = ({ isActive }) => isActive ? "text-white bg-blue-700 h-full flex items-center px-4" : "text-white h-full flex items-center px-4"
 
 const Root = () => (
@@ -24,7 +26,9 @@ const Root = () => (
             </div>
         </nav>
         <div className="container mx-auto py-4">
-            <Outlet />
+            <ErrorBoundary>
+                <Outlet />
+            </ErrorBoundary>
         </div>
     </div>
 );
