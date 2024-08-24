@@ -15,6 +15,7 @@ type Trip struct {
 	Content          string
 	Agency           string
 	TrainLineStops   []LineStop
+	DayInYear        int
 }
 
 type StationDiff struct {
@@ -40,6 +41,7 @@ type Diff struct {
 	PreviousStop       string
 	TrainLineStops     []LineStop
 	Agency             string
+	AlternateTrain     *Trip
 }
 
 type Stop struct {

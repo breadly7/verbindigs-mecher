@@ -4,8 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/verbindigs-mecher/internal/models"
 	"regexp"
+
+	"github.com/verbindigs-mecher/internal/models"
 )
 
 func LoadTrips(dbpath string, stopId string, dayInYear int) (*[]models.Trip, error) {
@@ -25,6 +26,7 @@ func LoadTrips(dbpath string, stopId string, dayInYear int) (*[]models.Trip, err
 
 	for res.Next() {
 		item := models.Trip{}
+		item.DayInYear = dayInYear
 
 		err = res.Scan(&item.StopName, &item.VehicleType, &item.ServiceLine, &item.TrainNumber, &item.StopId, &item.DepTime, &item.ArrTime, &item.Content, &item.Agency)
 		if err != nil {
