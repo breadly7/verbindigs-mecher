@@ -19,6 +19,8 @@ const Differences = () => {
             }
 
             try {
+                setLoading(true);
+
                 const stopIds = selectedStops.map(stop => stop.value);
                 const result = await getScheduleDifferences(stopIds);
                 setData(result);
