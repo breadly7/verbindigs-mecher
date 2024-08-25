@@ -2,8 +2,15 @@ import React from 'react';
 
 import formatTime from '../utils/formatTime';
 import Accordion from './Accordion';
+import BusInfo from './BusInfo';
 
-const DifferenceItem = ({ difference, currentStop }) => {
+const DifferenceItem = ({ difference, currentStop, currentStopId, date }) => {
+	const alternativeStop = difference.AlternateTrain
+        ? difference.AlternateTrain.TrainLineStops.find(stop => stop.StopId === currentStopId)
+        : null;
+
+    const newArrivalTime = alternativeStop ? alternativeStop.ArrTime : null;
+
 	return (
 		<Accordion
 			title={`${difference.TrainLine} [${difference.TrainNumber}] from ${difference.PreviousStop} at ${formatTime(difference.PlannedArrivalTime)}`}
@@ -33,10 +40,10 @@ const DifferenceItem = ({ difference, currentStop }) => {
 						const hasAltDepTime = altArrTime ? depTime !== altDepTime : false;
 
 						const rowStyle = {
-                            borderBottom: stop.StopName === currentStop ? '1px solid darkgrey' : undefined,
-                            textDecoration: hasAlternative && !alternativeStop ? 'line-through' : undefined,
-                            color: hasAlternative && !alternativeStop ? 'red' : undefined
-                        };
+							borderBottom: stop.StopName === currentStop ? '1px solid darkgrey' : undefined,
+							textDecoration: hasAlternative && !alternativeStop ? 'line-through' : undefined,
+							color: hasAlternative && !alternativeStop ? 'red' : undefined
+						};
 
 						return (
 							<tr key={index} style={rowStyle}>
@@ -70,10 +77,18 @@ const DifferenceItem = ({ difference, currentStop }) => {
 				</tbody>
 			</table>
 			{!difference.AlternateTrain && (
-                <div className="my-2 text-red-500 text-xs">
-                    Warning: No alternate train was found.
-                </div>
-            )}
+				<div className="my-2 text-red-500 text-xs">
+					Warning: No alternate train was found.
+				</div>
+			)}
+			{difference.AlternateTrain &&
+				<BusInfo
+					stationId={currentStopId}
+					regularArrTime={difference.PlannedArrivalTime}
+					delayedArrTime={newArrivalTime.slice(-4)}
+					day={Math.floor(date.getTime() / 1000)}
+				/>
+			}
 		</Accordion>
 	);
 };

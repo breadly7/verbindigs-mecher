@@ -20,6 +20,8 @@ const Differences = () => {
     const [endDate, setEndDate] = useState('');
     const { data, loading, error } = useScheduleDifferences(selectedStops, startDate, endDate);
 
+    console.log(selectedStops);
+
     const loadStops = async inputValue => {
         const results = await getSearchStop(inputValue);
 
@@ -88,7 +90,13 @@ const Differences = () => {
                                         </div>
                                     )}
                                     {diffPerDay.Differences.filter(diff => selectedTrainLine === null || diff.TrainLine === selectedTrainLine).map(diff => (
-                                        <DifferenceItem key={diff.TrainNumber} difference={diff} currentStop={location.Name} />
+                                        <DifferenceItem
+                                            key={diff.TrainNumber}
+                                            difference={diff}
+                                            currentStop={location.Name}
+                                            currentStopId={selectedStops.find(stop => stop.label === location.Name).value}
+                                            date={new Date(diffPerDay.Date)}
+                                        />
                                     ))}
                                 </Accordion>
                             );

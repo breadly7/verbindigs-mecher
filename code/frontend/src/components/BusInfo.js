@@ -1,0 +1,48 @@
+import { useEffect, useState } from 'react';
+
+import { getBusInfo } from '../services/apiService';
+import LoadingSpinner from './LoadingSpinner';
+
+const BusInfo = ({ stationId, regularArrTime, delayedArrTime, day }) => {
+    const [busInfo, setBusInfo] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchBusInfo = async () => {
+            try {
+                const data = await getBusInfo(stationId, regularArrTime, delayedArrTime, day);
+                setBusInfo(data);
+            } catch (err) {
+                setError('Error fetching bus information');
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchBusInfo();
+    }, [stationId, regularArrTime, delayedArrTime, day]);
+
+    if (loading) return <LoadingSpinner />;
+    if (error) return <p className="text-xs text-red-500">{error}</p>;
+
+    return (
+        <div className="mt-4">
+            <h3 className="text-sm font-medium text-gray-700">Problematic Buses</h3>
+            {busInfo.length === 0 ? (
+                <p className="text-xs text-gray-500">No problematic buses found.</p>
+            ) : (
+                <ul className="list-disc list-inside text-xs text-gray-500">
+                    {busInfo.map((bus, index) => (
+                        <li key={index}>
+                            Bus {bus.busNumber} - {bus.issueDescription}
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    );
+};
+
+export default BusInfo;

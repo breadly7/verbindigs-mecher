@@ -33,6 +33,17 @@ export const getSearchStop = async term => {
 	return fetchData('/schedule/stops', { searchTerm: term });
 }
 
+export const getBusInfo = async (stationId, regularArrTime, delayedArrTime, day) => {
+    const query = {
+        stationId,
+        regularArrTime,
+        delayedArrTime,
+        day
+    };
+
+    return fetchData('/schedule/businfo', query);
+};
+
 export const getStatus = async () => {
 	return fetchData('/status');
 };
