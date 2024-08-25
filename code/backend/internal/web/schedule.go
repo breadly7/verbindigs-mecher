@@ -152,8 +152,38 @@ func findStationName(stationId string) string {
 	return ""
 }
 
+func parseDayInYearFromString(inputString string, defaultValue int) int {
+	if inputString == "" {
+		return defaultValue
+	}
+
+	splitString := strings.Split(inputString, "-")
+
+	yearInt, err := strconv.ParseInt(splitString[0], 10, 0)
+	if err != nil {
+		return defaultValue
+	}
+	MonthInt, err := strconv.ParseInt(splitString[1], 10, 0)
+	if err != nil {
+		return defaultValue
+	}
+	DayInt, err := strconv.ParseInt(splitString[2], 10, 0)
+	if err != nil {
+		return defaultValue
+	}
+	parsedDate := time.Date(int(yearInt), time.Month(MonthInt), int(DayInt), 0, 0, 0, 0, time.Local)
+	scheduleStartDate := time.Date(2023, 12, 10, 0, 0, 0, 0, time.Local)
+
+	return int(parsedDate.Sub(scheduleStartDate).Hours() / 24)
+}
+
 func scheduleDiffsEndpoint(c *gin.Context) {
 	stationIds := c.Query("stationIds")
+	startDate := c.Query("startDate")
+	endDate := c.Query("endDate")
+
+	startDayInYear := parseDayInYearFromString(startDate, 0)
+	endDayInYear := parseDayInYearFromString(endDate, 366)
 
 	stationDiffs := make([]models.StationDiff, 0)
 
@@ -165,27 +195,28 @@ func scheduleDiffsEndpoint(c *gin.Context) {
 	for _, v := range strings.Split(stationIds, ",") {
 		stationDiffsOnDay := make([]models.DayDiff, 0)
 
-		for y := range 366 {
-			plannedTrips, err := triploader.LoadTrips("./db/planned_schedule.sqlite", v, y)
+		for y := range endDayInYear - startDayInYear {
+			actualYear := y + startDayInYear
+			plannedTrips, err := triploader.LoadTrips("./db/planned_schedule.sqlite", v, actualYear)
 
 			if err != nil {
 				println(err.Error())
 				return
 			}
 
-			constructionTrips, err := triploader.LoadTrips("./db/construction_schedule.sqlite", v, y)
+			constructionTrips, err := triploader.LoadTrips("./db/construction_schedule.sqlite", v, actualYear)
 			if err != nil {
 				println(err.Error())
 				return
 			}
 
-			diffsOnDay := tripcomparator.CompareTrips(plannedTrips, constructionTrips, y)
+			diffsOnDay := tripcomparator.CompareTrips(plannedTrips, constructionTrips, actualYear)
 			if len(*diffsOnDay) == 0 {
 				continue
 			}
 
 			for i, _ := range *diffsOnDay {
-				alternateTrain, err := tripcomparator.FindAlternateTrain((*diffsOnDay)[i].Agency, (*diffsOnDay)[i].TrainNumber, v, constructionTrips, y)
+				alternateTrain, err := tripcomparator.FindAlternateTrain((*diffsOnDay)[i].Agency, (*diffsOnDay)[i].TrainNumber, v, constructionTrips, actualYear)
 				if err != nil {
 					(*diffsOnDay)[i].AlternateTrain = nil
 					continue
@@ -194,7 +225,7 @@ func scheduleDiffsEndpoint(c *gin.Context) {
 			}
 
 			stationDiffsOnDay = append(stationDiffsOnDay, models.DayDiff{
-				Date:        time.Date(2023, 12, 10, 0, 0, 0, 0, time.Local).AddDate(0, 0, y),
+				Date:        time.Date(2023, 12, 10, 0, 0, 0, 0, time.Local).AddDate(0, 0, actualYear),
 				Differences: *diffsOnDay,
 			})
 		}
