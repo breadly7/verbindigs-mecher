@@ -174,7 +174,8 @@ func parseDayInYearFromString(inputString string, defaultValue int) int {
 	parsedDate := time.Date(int(yearInt), time.Month(MonthInt), int(DayInt), 0, 0, 0, 0, time.Local)
 	scheduleStartDate := time.Date(2023, 12, 10, 0, 0, 0, 0, time.Local)
 
-	return int(parsedDate.Sub(scheduleStartDate).Hours() / 24)
+	// SBB bitmap starts at 1 for some reason
+	return int(parsedDate.Sub(scheduleStartDate).Hours()/24) + 1
 }
 
 func scheduleDiffsEndpoint(c *gin.Context) {
@@ -195,7 +196,7 @@ func scheduleDiffsEndpoint(c *gin.Context) {
 	for _, v := range strings.Split(stationIds, ",") {
 		stationDiffsOnDay := make([]models.DayDiff, 0)
 
-		for y := range endDayInYear - startDayInYear {
+		for y := range endDayInYear - startDayInYear + 1 {
 			actualYear := y + startDayInYear
 			plannedTrips, err := triploader.LoadTrips("./db/planned_schedule.sqlite", v, actualYear)
 
