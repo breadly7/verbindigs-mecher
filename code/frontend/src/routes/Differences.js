@@ -20,8 +20,6 @@ const Differences = () => {
     const [endDate, setEndDate] = useState('');
     const { data, loading, error } = useScheduleDifferences(selectedStops, startDate, endDate);
 
-    console.log(selectedStops);
-
     const loadStops = async inputValue => {
         const results = await getSearchStop(inputValue);
 
@@ -61,7 +59,7 @@ const Differences = () => {
             />
             {loading && <LoadingSpinner />}
             {error && <p className="text-red-600">{error}</p>}
-            {!loading && data && data.map(location => {
+            {!loading && data && selectedStops.length !== 0 && data.map(location => {
                 const filteredDifferencesPerDay = selectedTrainLine
                     ? location.DifferencesPerDay.map(day => ({
                         ...day,
@@ -89,15 +87,18 @@ const Differences = () => {
                                             Warning: At least one connection has no alternate train.
                                         </div>
                                     )}
-                                    {diffPerDay.Differences.filter(diff => selectedTrainLine === null || diff.TrainLine === selectedTrainLine).map(diff => (
-                                        <DifferenceItem
-                                            key={diff.TrainNumber}
-                                            difference={diff}
-                                            currentStop={location.Name}
-                                            currentStopId={selectedStops.find(stop => stop.label === location.Name).value}
-                                            date={new Date(diffPerDay.Date)}
-                                        />
-                                    ))}
+                                    {diffPerDay.Differences.filter(diff => selectedTrainLine === null || diff.TrainLine === selectedTrainLine).map(diff => {
+                                        const stopObj = selectedStops.find(stop => stop.label === location.Name)
+                                        return (
+                                            <DifferenceItem
+                                                key={diff.TrainNumber}
+                                                difference={diff}
+                                                currentStop={location.Name}
+                                                currentStopId={stopObj ? stopObj.value : null}
+                                                date={new Date(diffPerDay.Date)}
+                                            />
+                                        )
+                                    })}
                                 </Accordion>
                             );
                         })}

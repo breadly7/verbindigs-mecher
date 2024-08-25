@@ -9,9 +9,9 @@ const useScheduleDifferences = (selectedStops, startDate, endDate) => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setData(null);
             if (selectedStops.length === 0) {
                 setLoading(false);
-                setData(null);
                 return;
             }
 
