@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { getBusInfo } from '../services/apiService';
 import LoadingSpinner from './LoadingSpinner';
+import formatTime from '../utils/formatTime';
 
 const BusInfo = ({ stationId, regularArrTime, delayedArrTime, day }) => {
     const [busInfo, setBusInfo] = useState([]);
@@ -29,17 +30,32 @@ const BusInfo = ({ stationId, regularArrTime, delayedArrTime, day }) => {
 
     return (
         <div className="mt-4">
-            <h3 className="text-sm font-medium text-gray-700">Problematic Buses</h3>
+            <h3 className="text-sm font-medium text-gray-700">Problematic Busses</h3>
             {busInfo.length === 0 ? (
-                <p className="text-xs text-gray-500">No problematic buses found.</p>
+                <p className="text-xs text-gray-500">No problematic busses found.</p>
             ) : (
-                <ul className="list-disc list-inside text-xs text-gray-500">
-                    {busInfo.map((bus, index) => (
-                        <li key={index}>
-                            Bus {bus.busNumber} - {bus.issueDescription}
-                        </li>
-                    ))}
-                </ul>
+                <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                        <tr>
+                            <th className="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stop Name</th>
+                            <th className="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stop Departure</th>
+                            <th className="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Walk Minutes</th>
+                            <th className="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Destination Stop Name</th>
+                            <th className="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Agency</th>
+                        </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                        {busInfo.map((bus, index) => (
+                            <tr key={index}>
+                                <td className="px-2 py-1 whitespace-nowrap text-xs font-medium text-gray-900">{bus.StopName}</td>
+                                <td className="px-2 py-1 whitespace-nowrap text-xs text-gray-500">{formatTime(bus.StopDeparture)}</td>
+                                <td className="px-2 py-1 whitespace-nowrap text-xs text-gray-500">{bus.WalkMinutes}</td>
+                                <td className="px-2 py-1 whitespace-nowrap text-xs text-gray-500">{bus.DestinationStopName}</td>
+                                <td className="px-2 py-1 whitespace-nowrap text-xs text-gray-500">{bus.Agency}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             )}
         </div>
     );
