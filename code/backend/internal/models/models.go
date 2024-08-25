@@ -48,3 +48,11 @@ type Stop struct {
 	Name string
 	Id   string
 }
+
+type MissedConnection struct {
+	StopName            string
+	StopDeparture       string
+	WalkMinutes         int
+	DestinationStopName string
+	Agency              string
+}
